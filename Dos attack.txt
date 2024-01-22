@@ -1,0 +1,53 @@
+DOS ATTACK:
+
+In server
+→To install snort tool
+----------------------------
+sudo apt-get install snort -y
+
+→To start snort
+----------------------
+sudo snort -A console -c /etc/snort/snort.conf
+
+→IDS configure
+--------------------- 
+cd /etc/snort
+cp snort.conf test_snort.conf
+sudo gedit test_snort.conf
+
+→Then go to line 51 and under “ipvar HOME_NET any” write ip var HOME_NET your host ip
+ipvar HOME_NET 192.168.0.104/24
+
+cd /etc/snort/rules
+sudo gedit local.rules
+
+→Write the following line and save exit
+--------------------------------------------------- 
+alert tcp any any -> $HOME_NET any (flags:S; msg:"DoS attack happening"; flow:stateless; detection_filter:track by_dst,count 70,Seconds 10; sid:1000001; rev:1;)
+
+→Validate the conf file
+----------------------------
+sudo snort -T -c /etc/snort/test_snort.conf -i enp0s3
+
+→Start snort 
+-------------- 
+sudo snort -A console -q -i enp0s3 -c /etc/snort/test_snort.conf
+
+
+In attack client 
+→To install hping3 tool
+-----------------------------------
+Apt install hping3 -y
+
+→To start attack 
+----------------------------
+Sudo hping3  -S –flood -V -p 443 192.168.0.104
+
+
+
+
+
+
+
+
+NOW START ATTACK FROM CLIENT TO SERVER
